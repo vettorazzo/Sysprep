@@ -1,0 +1,101 @@
+@echo off
+
+ECHO ------------------------------------------------------------------------ 
+REM CONFIGURA O NTP.PR.GOV.BR COMO SERVIDOR PADRÃO
+ECHO(
+
+REM PARA O SERVICO W32TIME
+ECHO PARA O SERVICO W32TIME
+net stop w32time
+
+ECHO(
+
+REM TIMEOUT DE 2 SEGUNDOS
+timeout 2
+
+ECHO(
+
+REM REMOVE O SERVICO W32TIME
+ECHO REMOVE O SERVICO W32TIME
+sc triggerinfo w32time delete
+
+ECHO(
+
+REM TIMEOUT DE 2 SEGUNDOS
+timeout 2
+
+ECHO(
+
+REM DESREGISTRA O SERVICO W32TIME
+ECHO DESREGISTRA O O SERVICO W32TIME
+w32tm /unregister
+
+ECHO(
+
+REM TIMEOUT DE 2 SEGUNDOS
+timeout 2
+
+ECHO(
+
+REM REGISTRA O SERVICO
+ECHO REGISTRA O SERVICO
+w32tm /register
+
+REM TIMEOUT DE 2 SEGUNDOS
+timeout 2
+
+ECHO(
+
+ECHO ADICIONANDO CHAVES DE REGISTRO
+REM DEIXA O SERVIÇO DO HORÁRIO PARA INICIAR AUTOMÁTICO ###
+REG add "HKLM\SYSTEM\CurrentControlSet\services\W32Time" /v Start /t REG_DWORD /d 2 /f
+
+REM HABILITAR NTPCLIENT ###
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient /v "Enabled" /t REG_DWORD /d "00000001" /f
+
+REM DEFINE O INTERVALO PADRÃO PARA 1 DIA (86400 SEGUNDOS) ###
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\NtpClient /v "SpecialPollInterval" /t REG_DWORD /d "00086400" /f
+
+REM DEFINE O SERVIDOR NÚMERO PADRÃO COMO NTP.PR.GOV.BR ###
+REG ADD HKLM\SYSTEM\CurrentControlSet\Services\W32Time\Parameters /v "NtpServer" /t REG_SZ /d "ntp.pr.gov.br,0x9" /f
+
+REM DEFINE O PADRÃO COMO 0 ###
+REG add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DateTime\Servers /t REG_SZ /d 0 /f
+
+REM DEFINE O SERVIDOR NÚMERO 0 COMO NTP.PR.GOV.BR ###
+REG add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DateTime\Servers /v 0 /t REG_SZ /d ntp.pr.gov.br /f
+
+ECHO(
+
+REM START O SERVIÇO DE HORÁRIO DO WINDOWS
+ECHO START SERVICO
+net start w32time
+
+ECHO(
+
+REM OUTRA DEFINIÇÃO DO NTP.PR.GOV.BR COMO PADRÃO ###
+ECHO DEFINE O NTP.PR.GOV.BR COMO PADRAO
+w32tm /config /manualpeerlist:ntp.pr.gov.br /syncfromflags:manual /update
+
+ECHO(
+
+REM MOSTRA OS SERVIDORES
+ECHO MOSTRA SERVERS
+w32tm /query /peers
+
+ECHO(
+
+REM MOSTRA O STATUS DOS SERVIDORES
+ECHO MOSTRA STATUS
+w32tm /query /status
+
+ECHO(
+
+REM FAZ A SINCRONIZAÇÃO SEM AGUARDAR E ELIMINA ESTATISTICAS DE ERRO
+ECHO RESYNC NOWAIT
+w32tm /resync /nowait
+
+ECHO(
+
+ECHO FIM DA CONFIGURACAO DO NTP SERVER
+EXIT

@@ -1,0 +1,35 @@
+// IMPORTANT: Start your code on the 2nd line
+
+//SoluÃ§Ã£o de certificado das extensÃµes
+lockPref("xpinstall.signatures.required",false);
+
+// Configura e bloqueia alteraÃ§?es de Homepage
+lockPref("browser.startup.homepage", "http://www.pge.pr.gov.br");
+lockPref("browser.startup.page", 1);
+
+// Desabilita a pÃ¡gina "ConheÃ§a seus direitos"
+lockPref("browser.rights.override", true);
+
+// Desabilita o pedido de envio de dados de performance
+lockPref("toolkit.telemetry.prompted", 2);
+lockPref("toolkit.telemetry.rejected", true);
+
+//make plugins always active
+lockPref("plugin.default.state",2);
+
+// Disable updater
+lockPref("app.update.enabled", false);
+// make absolutely sure it is really off
+lockPref("app.update.auto", false);
+lockPref("app.update.mode", 0);
+lockPref("app.update.service.enabled", false);
+lockPref("xpinstall.signatures.required", false);
+
+//donÂ´t ask proxy authentication
+lockPref("network.auth.use-sspi",false);
+lockPref("network.captive-portal-service.enabled",false);
+
+// Alterado em 23/03 por Marcos Vettorazzo em virtude da quarentena
+// Configura proxy para .pac
+//lockPref("network.proxy.autoconfig_url", "http://proxypge01.pge.parana/proxy-pge.pac");
+//lockPref("network.proxy.type", 2);

@@ -1,0 +1,1 @@
+Powershell -command "Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine"

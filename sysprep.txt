@@ -1,0 +1,105 @@
+# Instalar SO
+# NÃO EFETUAR LOGIN
+# CTRL + SHIFT + F3
+# Instalar aplicativos padrão(LibreOffice, PDF, 7-Zip, Navegadores, Java, Assinadores, certificados ...
+# 
+# Atualizar TUDO (SO / Softwares / Store)
+# ..\WSUS\PSWUpdate.ps1
+# Importar Layout padrão
+#
+# Efetuar limpeza de App desnecessárias 
+# removeApps.ps1
+#
+# Personalização de navegadores e aplicação de políticas
+# Mozilla e Chrome etc ...
+# politicas Firefox: install.ps1
+# Configurar proxy
+# Importar favoritos
+# Definir página inicial
+# Acessar cada um dos favoritos(atualizar favicon)
+# Limpar histórico(não cache)
+#
+# Definir os programas padrão
+# Navegadores, Visualizador de PDF, Arquivos compactados 
+# Exportar/Importar xml 
+# .\setFileAssoc.ps1
+#
+# Aplicar novo Layout.xml 
+# StartMenu/exportLayout.ps1
+# o xml de saida não contem alguns items, é necessário revisar e editar manualmente.
+# o formato do arquivo (identação) é o maior causador de problemas.
+# não há como exportar os ícones da barra de Tarefas.
+#
+# Aplicar papel de parede C:\Uteis\Layout\Wallpaper    
+#
+# Aplicar layout via GPO(gpedit.msc) em Configurações do Usuário / Modelos Administrativos /Menu Iniciar e Barra de Tarefas
+# .\setGPO.ps1
+#
+# Ajustes
+# ntp adminShares
+#
+# Protocolo SMB v1 
+# Samba/*.bat|*.ps1
+# Detectar:	Get-WindowsOptionalFeature –Online –FeatureName SMB1Protocol
+# Desabilitar:	Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol
+# Habilitar:	Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol
+#
+# Definir configurações de proxy do sistema
+# .\setProxy.ps1
+#
+# Efetuar limpezas de disco/registro
+# Registro:
+# HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+# remover pasta %appdata%\Roaming\Microsoft\Windows\PowerShell\
+# 
+# rodar sysprep
+# criar imagem
+#
+# +
+# | guia_sysprep.txt
+# | post_deploy.ps1
+# | pre_sysprep.ps1
+# +---Ajustes
+# |    ajusta-ntp.bat
+# |    ajusta-tzdata.bat
+# |    ativaAdminShare.bat
+# |    enableScripts.bat
+# |    habilitaSMBv1.ps1
+# |
+# +---Layout
+# |   |   applyLayout.ps1
+# |   |   
+# |   +---StartMenu
+# |   |       fullLayout.xml
+# |   |       initLayout.xml
+# |   |       startLayout.txt
+# |   |       taskbarLayout.xml
+# |   |       
+# |   \---Wallpaper
+# |           wallpaper.jpg
+# |
+# +---Navegadores
+# |   |   bookmarks.html
+# |   |   bookmarksff.json
+# |   |   install.ps1
+# |   |   
+# |   +---chrome
+# |   |       master_preferences
+# |   |       
+# |   \---firefox
+# |           autoconfig.js
+# |           local-settings.js
+# |           mozilla.cfg
+# | 
+# \---Samba
+#         Windows10_Gerenciamento_Credenciais.reg
+#         Windows10_Netlogon.reg
+#         Windows10_SambaDomain.reg
+#         Windows10_SMB.ps1
+# +---Softwares
+# |       removeApps.ps1
+# |       setFileAssoc.ps1
+# |
+# \---Sysprep
+#        copy.xml
+#        sysprep.ps1
