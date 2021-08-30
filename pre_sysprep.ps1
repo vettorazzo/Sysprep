@@ -53,17 +53,13 @@ function Show-Banner {
 function Check-Files([string]$Orig, $arquivos) {
 
     $tarefa = "Checando arquivos em: " + $Orig
-
     $check_error = 0
-
     # $n = 1
-
     # Show-Banner $tarefa
 
     Foreach ($i in $arquivos) {
 
         $FileOrig = $Orig + $i
-
         Write-Host -BackgroundColor Green -ForegroundColor Black "Verificando arquivo " $FileOrig
 
         If ( Test-Path -Path $FileOrig ) {
@@ -103,9 +99,7 @@ function Copy-Files([string]$Orig, [string]$Dest) {
         Write-Host "Fim da limpeza..."
     }
 
-
     $tarefa = "Copiando arquivos de: " + $Orig + "para: " + $Dest
-
     # Show-Banner $tarefa
 
     If ($Orig -eq $null){
@@ -667,7 +661,6 @@ if (Test-Path -Path $keyPreDeploy){
 } else {
     $isPreDeploy = $false
 }
-
 
 $keyAjustes = "C:\Uteis\keyAjustes"
 $isKeyAjustes = $false
