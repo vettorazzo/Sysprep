@@ -370,8 +370,8 @@ function Start-PreDeploy {
 function Start-PostDeploy {
     # Start-Anim
 
-    $user = "bot-pge"
-    $pass = "pge2021"
+    $user = "apoio-ti"
+    $pass = "pge2020"
     $tipo = @("E", "N", "S")
     $tag = "*PGE*"
     $dom = "PGESL"
