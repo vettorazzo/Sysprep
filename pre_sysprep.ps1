@@ -369,11 +369,14 @@ function Start-PreDeploy {
 }
 function Start-PostDeploy {
     # Start-Anim
-    
+
+    $user = "bot-pge"
+    $pass = "pge2021"
     $tipo = @("E", "N", "S")
     $tag = "*PGE*"
     $dom = "PGESL"
     $pat = "xxxxxx"
+
     $hostname = $env:computername
     $workgroup = $env:userdomain
 
@@ -386,10 +389,33 @@ function Start-PostDeploy {
         $nHost = Read-Host
         Rename-Computer -NewName $nHost
         Add-Computer -WorkGroupName $dom
-        # -DomainCredential Domain01\Admin01 
         # reboot
-
     }
+
+    # adicionar ao dominio
+    Do {
+        $keyYes  = [ConsoleKey]::S
+        $keyNo = [ConsoleKey]::N
+        Write-Host -ForegroundColor Red -BackgroundColor White "Ingressar estação no domínio '$dom' ?"
+        Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  S - Ingressar no domíno.  #"
+        Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  N - Continuar.      #"
+        $keyInfo = [console]::ReadKey($true)
+    } Until ( ($keyInfo.Key -eq $keyYes) -Or ($keyInfo.Key -eq $keyNo)  )
+
+    Switch ($keyInfo.Key) {
+        "S" {
+            Write-Host -BackgroundColor Red  "Ingressando no domínio '$dom'..."
+            $securePass = ConvertTo-SecureString -AsPlainText $pass -Force
+            $cred = New-Object System.Management.Automation.PSCredential $dom\$user, $securePass
+            Add-Computer -domainname $dom --DomainCredential $cred -passthru
+            # -DomainCredential Domain01\Admin01    
+        }
+        "N" {
+            Write-Host "Continuando..."
+        }
+    }
+
+
 
     # cria login PGE
     If ((Get-LocalUser -Name pge -ErrorAction SilentlyContinue) -eq $null) {
