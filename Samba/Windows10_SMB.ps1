@@ -8,6 +8,9 @@ Start-Process -Wait reg.exe -ArgumentList "import $localexecPath\Softwares\Samba
 Write-Host "Importando Wndows10_SambaDomain.reg ..."
 Start-Process -Wait reg.exe -ArgumentList "import $localexecPath\Softwares\Samba\Windows10_SambaDomain.reg"
 
+Write-Host "Importando Wndows10_SambaHardened.reg ..."
+Start-Process -Wait reg.exe -ArgumentList "import $localexecPath\Softwares\Samba\Windows10_SambaHardened.reg"
+
 Write-Host "Ativando suporte ao protocolo SMBv1 ..."
 # Desabilitar:	Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol
 # Habilitar:	
