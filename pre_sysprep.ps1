@@ -31,6 +31,7 @@ function Start-Anim {
     Write-Host "`r " -NoNewline
     Write-Host ""
 }
+
 function Show-Banner {
 
     # Clear-Host
@@ -50,6 +51,7 @@ function Show-Banner {
     Write-Host -BackgroundColor Red -ForegroundColor Black  "Origem dos Arquivos: " $Orig
     Write-Host -BackgroundColor Red -ForegroundColor Black "Status: " $tarefa
 }
+
 function Check-Files([string]$Orig, $arquivos) {
 
     $tarefa = "Checando arquivos em: " + $Orig
@@ -65,7 +67,7 @@ function Check-Files([string]$Orig, $arquivos) {
         If ( Test-Path -Path $FileOrig ) {
             Write-Host -BackgroundColor Green -ForegroundColor Black "`rOK"
         } Else {
-            Write-Host -BackgroundColor Red -ForegroundColor White "`r ausente."
+            Write-Host -BackgroundColor Red -ForegroundColor White "`rausente."
             $check_error = $check_error + 1 
         }
         # If ( $n -gt 2 ){
@@ -86,6 +88,7 @@ Não foi possível encontrar alguns arquivos!"
         Return $false
     }
 }
+
 function Copy-Files([string]$Orig, [string]$Dest) {
 
     $copy_error = 0
@@ -95,7 +98,7 @@ function Copy-Files([string]$Orig, [string]$Dest) {
         Apagando conteúdo..."
 
         Get-ChildItem -Path "C:\Uteis" -Exclude 'Instaladores', '*CCleaner*', '*Softwares*' | Remove-Item -Recurse
-        Start-Anim -num 3
+        #Start-Anim -num 3
         Write-Host "Fim da limpeza..."
     }
 
@@ -140,7 +143,7 @@ function Copy-Files([string]$Orig, [string]$Dest) {
             Write-Host -BackgroundColor DarkGreen -ForegroundColor DarkYellow "Arquivo copiado."
         }
 
-        Start-Anim -num 5
+        #Start-Anim -num 3
 
         # If ( $n -gt 2 ){
         #     Show-Banner $tarefa
@@ -153,7 +156,7 @@ function Copy-Files([string]$Orig, [string]$Dest) {
 
     if ( $isKeySwInst ){
         Write-Host "Softwares já instalados?"
-        Start-Anim
+        #Start-Anim
     } else {
         Write-Host "Iniciando cópia dos instaladores ..."
 
@@ -199,6 +202,7 @@ function Copy-Files([string]$Orig, [string]$Dest) {
         Return $false
     }
 }
+
 function Start-SWInst {
 
     Do {
@@ -207,11 +211,11 @@ function Start-SWInst {
         
         Clear-Host
         Write-Host -BackgroundColor Red "#  Todos os softwares presentes em              #
-#  "$localExecPath"\Softwares\Instaladores\ serão instalados!  #"
-        Write-Host "
-#  (S)im - Instalar os Softwares.         #
-#  (N)ão - Prosseguir com a preparação.   #
-"
+        #  "$localExecPath"\Softwares\Instaladores\ serão instalados!  #"
+                Write-Host "
+        #  (S)im - Instalar os Softwares.         #
+        #  (N)ão - Prosseguir com a preparação.   #
+        "
         $keyInfo = [console]::ReadKey($true)
 
     } Until (($keyInfo.Key -eq $keyYes) -Or ($keyInfo.Key -eq $keyNo) )
@@ -257,6 +261,7 @@ function Start-SWInst {
         }
     }
 }
+
 function Start-Sysprep {
 
         If ( (Get-Process -Name sysprep -ErrorAction SilentlyContinue) -ne $null ){
@@ -292,8 +297,8 @@ function Start-Sysprep {
             Write-Host "Removendo histórico de comandos do Powershell ..."
             Remove-Item -Confirm:$false $env:APPDATA"\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -ErrorAction SilentlyContinue | Out-Null
             
-            Write-Host "Iniciando CCleaner ..."
-            Start-Process -Wait $localExecPath"\Softwares\CCleanerPortable\CCleaner64.exe"
+            #Write-Host "Iniciando CCleaner ..."
+            #Start-Process -Wait $localExecPath"\Softwares\CCleanerPortable\CCleaner64.exe"
             
             Write-Host "Iniciando limpeza de discos..."
             Start-Process -Wait powershell -ArgumentList 'C:\Windows\System32\cleanmgr.exe /sagerun:0'
@@ -315,6 +320,7 @@ function Start-Sysprep {
         }
     }    
 }
+
 function Start-PreDeploy {
 
     if ( -Not $isKeyAjustes ){
@@ -343,13 +349,13 @@ function Start-PreDeploy {
 
     }
 
-    if ( -Not $isKeySwInst ){
-        # Instalar softwares
-        Start-SWInst
-    }
+    #if ( -Not $isKeySwInst ){
+    #    # Instalar softwares
+    #    Start-SWInst
+    #}
         
-    Write-Host "Navegadores\install.ps1"
-    Start-Process -Wait powershell -ArgumentList '-Command "Navegadores\install.ps1"'
+    #Write-Host "Navegadores\install.ps1"
+    #Start-Process -Wait powershell -ArgumentList '-Command "Navegadores\install.ps1"'
     
     Write-Host "Softwares\removeApps.ps1"
     Start-Process -Wait powershell -ArgumentList '-Command "Softwares\removeApps.ps1"'
@@ -360,124 +366,133 @@ function Start-PreDeploy {
     Write-Host "Layout\applyLayout.ps1"
     Start-Process -Wait powershell -ArgumentList '-Command "Layout\applyLayout.ps1"'
 
-    Start-Process notepad.exe -ArgumentList "C:\Uteis\Layout\StartMenu\desktopLayout.xml"
+    #Start-Process notepad.exe -ArgumentList "C:\Uteis\Layout\StartMenu\desktopLayout.xml"
 
     Write-Host "Fim pre-deploy"
 
     Start-Sysprep
 
 }
+
 function Start-PostDeploy {
     # Start-Anim
 
-    $user = "apoio-ti"
-    $pass = "pge2020"
-    $tipo = @("E", "N", "S")
-    $tag = "*PGE*"
+    # $user = "apoio-ti"
+    # $pass = "pge2020"
+    # $tipo = @("E", "N", "S")
+    $tag = "*EPGE*"
     $dom = "PGESL"
-    $pat = "xxxxxx"
+    $domain = reg query "HKLM\System\CurrentControlSet\Services\Tcpip\Parameters" /v "Domain" | ForEach-Object { $_.split(" ")[12] }
+    # $pat = "xxxxxx"
 
     $hostname = $env:computername
     $workgroup = $env:userdomain
 
     #HOSTNAME & WORKGROUP
-    If ( $hostname -NotLike $tag ){
-        # [E|N|S]$TAG$PAT
-        Write-Output "Digite o hostname:
-        N - Notebook; E - Estação; S - Servidor;
-        Ex.: # [E|N|S]PGE12345"
-        $nHost = Read-Host
-        Rename-Computer -NewName $nHost
-        Add-Computer -WorkGroupName $dom
-        # reboot
-    }
+    #If ( $hostname -NotLike $tag ){
+    #    # [E|N|S]$TAG$PAT
+    #    Write-Output "Digite o hostname:
+    #    N - Notebook; E - Estação; S - Servidor;
+    #    Ex.: # [E|N|S]PGE12345"
+    #    $nHost = Read-Host
+    #    Rename-Computer -NewName $nHost
+    #    Add-Computer -WorkGroupName $dom
+    #    # reboot
+    #}
 
     # adicionar ao dominio
-    Do {
-        $keyYes  = [ConsoleKey]::S
-        $keyNo = [ConsoleKey]::N
-        Write-Host -ForegroundColor Red -BackgroundColor White "Ingressar estação no domínio '$dom' ?"
-        Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  S - Ingressar no domíno.  #"
-        Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  N - Continuar.      #"
-        $keyInfo = [console]::ReadKey($true)
-    } Until ( ($keyInfo.Key -eq $keyYes) -Or ($keyInfo.Key -eq $keyNo)  )
+    #Do {
+    #    $keyYes  = [ConsoleKey]::S
+    #    $keyNo = [ConsoleKey]::N
+    #    Write-Host -ForegroundColor Red -BackgroundColor White "Ingressar estação no domínio '$dom' ?"
+    #    Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  S - Ingressar no domíno.  #"
+    #    Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  N - Continuar.      #"
+    #    $keyInfo = [console]::ReadKey($true)
+    #} Until ( ($keyInfo.Key -eq $keyYes) -Or ($keyInfo.Key -eq $keyNo)  )
+    #
+        #Switch ($keyInfo.Key) {
+        #    "S" {
+        #        Write-Host -BackgroundColor Red  "Ingressando no domínio '$dom'..."
+        #        $securePass = ConvertTo-SecureString -AsPlainText $pass -Force
+        #        $cred = New-Object System.Management.Automation.PSCredential $dom\$user, $securePass
+        #        Add-Computer -domainname $dom --DomainCredential $cred -passthru
+        #        # -DomainCredential Domain01\Admin01    
+        #    }
+        #    "N" {
+        #        Write-Host "Continuando..."
+        #    }
+        #}
+    #
 
-    Switch ($keyInfo.Key) {
-        "S" {
-            Write-Host -BackgroundColor Red  "Ingressando no domínio '$dom'..."
-            $securePass = ConvertTo-SecureString -AsPlainText $pass -Force
-            $cred = New-Object System.Management.Automation.PSCredential $dom\$user, $securePass
-            Add-Computer -domainname $dom --DomainCredential $cred -passthru
-            # -DomainCredential Domain01\Admin01    
+
+    #    # cria login PGE
+    #    If ((Get-LocalUser -Name pge -ErrorAction SilentlyContinue) -eq $null) {
+    #
+    #        Do {
+    #            $keyYes  = [ConsoleKey]::S
+    #            $keyNo = [ConsoleKey]::N
+    #            Write-Host -ForegroundColor Red -BackgroundColor White "Criar usuário local PGE ?"
+    #            Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  S - Criar usuário.  #"
+    #            Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  N - Continuar.      #"
+    #    
+    #            $keyInfo = [console]::ReadKey($true)
+    #        } Until ( ($keyInfo.Key -eq $keyYes) -Or ($keyInfo.Key -eq $keyNo)  )
+    #
+    #        Switch ($keyInfo.Key) {
+    #            "S" {
+    #                Write-Host -BackgroundColor Red  "Defina a senha para o usuário PGE..."
+    #                $pass = ConvertTo-SecureString "pge2021" -AsPlainText -Force
+    #                New-LocalUser "pge" -Password $pass -FullName "Usuário PGE" -Description "Usuário PGE" -AccountNeverExpires -PasswordNeverExpires -UserMayNotChangePassword | Out-Null
+    #                Add-LocalGroupMember -Group "Usuários" -Member "pge" | Out-Null
+    #                Start-Anim -num 3
+    #                Write-Host -BackgroundColor Green -ForegroundColor White "Usuário local 'pge' criado."
+    #            }
+    #            "N" {
+    #                Write-Host "Continuando..."
+    #                
+    #            }
+    #        }
+    #
+    #    } else {
+    #        Write-Host "Usuário local 'pge' já existe. Continuando ..."
+    #    }
+   
+    If ( $domain -Like $dom -And $hostname -Like $tag ){
+
+        # WSUS & UPDATE    
+        $key = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU'
+        $wsus = (Get-ItemProperty -Path $key -Name UseWUServer -ErrorAction SilentlyContinue).UseWUServer
+        If ($wsus -ne 1){
+            Write-Host "Configurando WSUS ..."
+            Start-Process -Wait powershell -ArgumentList 'C:\Uteis\Softwares\WSUS\wsus.bat'
+            Start-Process -Wait powershell -ArgumentList 'C:\Uteis\Softwares\WSUS\limpaWSUS.bat'
+        } else {
+            Write-Host "WSUS já configurado."
         }
-        "N" {
-            Write-Host "Continuando..."
-        }
-    }
-
-
-
-    # cria login PGE
-    If ((Get-LocalUser -Name pge -ErrorAction SilentlyContinue) -eq $null) {
-
-        Do {
-            $keyYes  = [ConsoleKey]::S
-            $keyNo = [ConsoleKey]::N
-            Write-Host -ForegroundColor Red -BackgroundColor White "Criar usuário local PGE ?"
-            Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  S - Criar usuário.  #"
-            Write-Host Write-Host -BackgroundColor Red -ForegroundColor Yellow "#  N - Continuar.      #"
-    
-            $keyInfo = [console]::ReadKey($true)
-        } Until ( ($keyInfo.Key -eq $keyYes) -Or ($keyInfo.Key -eq $keyNo)  )
-
-        Switch ($keyInfo.Key) {
-            "S" {
-                Write-Host -BackgroundColor Red  "Defina a senha para o usuário PGE..."
-                $pass = ConvertTo-SecureString "pge2021" -AsPlainText -Force
-                New-LocalUser "pge" -Password $pass -FullName "Usuário PGE" -Description "Usuário PGE" -AccountNeverExpires -PasswordNeverExpires -UserMayNotChangePassword | Out-Null
-                Add-LocalGroupMember -Group "Usuários" -Member "pge" | Out-Null
-                Start-Anim -num 3
-                Write-Host -BackgroundColor Green -ForegroundColor White "Usuário local 'pge' criado."
-            }
-            "N" {
-                Write-Host "Continuando..."
-            }
-        }
-
-    } else {
-        Write-Host "Usuário local 'pge' já existe. Continuando ..."
-    }
-
-    # WSUS & UPDATE    
-    $key = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU'
-    $wsus = (Get-ItemProperty -Path $key -Name UseWUServer -ErrorAction SilentlyContinue).UseWUServer
-    If ($wsus -ne 1){
-        Write-Host "Configurando WSUS ..."
-        Start-Process -Wait powershell -ArgumentList 'C:\Uteis\Softwares\WSUS\wsus.bat'
-        Start-Process -Wait powershell -ArgumentList 'C:\Uteis\Softwares\WSUS\limpaWSUS.bat'
-    }
-    
-    # KSP
-    If ( -Not (Test-Path -Path "C:\Program Files (x86)\Kaspersky Lab\NetworkAgent\klnagent.exe")){
-        Write-Host "Instalando Agente Kaspersky ..."
-        Start-Process -Wait powershell -ArgumentList 'C:\Uteis\Softwares\KSP\ksp.bat'
-    }
-
-    # VNC
-    If ( -Not (Test-Path -Path "C:\Program Files\RealVNC\VNC4\winvnc4.exe")){        
-        Write-Host "Instalando e configurando VNC Server ..."
-        Start-Process -Wait powershell -ArgumentList 'C:\Uteis\Softwares\VNC\vnc.bat'
-    }
-    
-    # # ZBX
-    # Write-Host "Instalando e configurando Zabbix Agent ..."
-    # If ( -Not (Test-Path -Path "C:\Zabbix")){ 
-    #     Start-Process -Wait powershell -ArgumentList ''
-    # }
-
-    # OCS
-    If ( $hostname -Like $tag ){
         
+        # KSP
+        If ( -Not (Test-Path -Path "C:\Program Files (x86)\Kaspersky Lab\NetworkAgent\klnagent.exe")){
+            Write-Host "Instalando Agente Kaspersky ..."
+            Start-Process -Wait powershell -ArgumentList 'C:\Uteis\Softwares\KSP\ksp.bat'
+        }else {
+            Write-Host "KSP já instalado."
+        }
+
+        # VNC
+        If ( -Not (Test-Path -Path "C:\Program Files\RealVNC\VNC4\winvnc4.exe")){        
+            Write-Host "Instalando e configurando VNC Server ..."
+            Start-Process -Wait powershell -ArgumentList 'C:\Uteis\Softwares\VNC\vnc.bat'
+        }else {
+            Write-Host "VNC já configurado."
+        }
+        
+        # # ZBX
+        # Write-Host "Instalando e configurando Zabbix Agent ..."
+        # If ( -Not (Test-Path -Path "C:\Zabbix")){ 
+        #     Start-Process -Wait powershell -ArgumentList ''
+        # }
+        
+        # OCS
         If ( -Not (Test-Path -Path "C:\Program Files (x86)\OCS Inventory Agent\OCSInventory.exe")){
             Write-Host "Instalando OCS ..."
             Start-Process -Wait powershell -ArgumentList 'C:\Uteis\Softwares\OCS\ocs.bat'
@@ -485,56 +500,63 @@ function Start-PostDeploy {
             Write-Host "OCS Inventory já está instalado."
         }
 
-    } else {
+        Write-Host "Removendo C:\Uteis ..."
+        Get-ChildItem -Path "C:\Uteis" -Exclude 'Layout' | Remove-Item -Recurse
+        shutdown /r /t 0
 
-        If (-Not (Test-Path -Path "C:\Users\procuradoria\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\pre_sysprep.lnk" )){
-            Write-Host "Copiando atalho para a pasta de autostart..."
-            If((Copy-Item -Path "C:\Uteis\pre_sysprep.lnk" -PassThru -Destination "C:\Users\procuradoria\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\pre_sysprep.lnk") -ne $null){
-                Write-Host "Atalho copiado."
-                Write-Host -BackgroundColor Red "Reiniciando... O script irá iniciar automaticamente após o login."
-                Start-Anim -num 5
-                Shutdown /r /f /t 3
-            } else {
-                "Erro ao copiar o atalho!"
-            }
-        } else {
-            "Atalho de autostart já existe."
-        }
+    }  else {
+        Write-Host "Equipamento ainda fora do dominio. Encerrando script..."
+        Exit 0
     }
 
-    Write-Host "Apagando arquivos desnecessários..."
-    Get-ChildItem -Path 'C:\Uteis' -Exclude 'Layout' | Remove-Item -Recurse -Force
-    Remove-Item 'C:\Uteis\Layout\applyLayout.ps1' -Force -ErrorAction SilentlyContinue | Out-Null
-    Remove-Item -Path "C:\Users\procuradoria\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\pre_sysprep.lnk" -Force -ErrorAction SilentlyContinue | Out-Null
-    Remove-Item -Path "C:\isFreshImage" -Force -ErrorAction SilentlyContinue | Out-Null
+    #     If (-Not (Test-Path -Path "C:\Users\procuradoria\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\pre_sysprep.lnk" )){
+    #         Write-Host "Copiando atalho para a pasta de autostart..."
+    #         If((Copy-Item -Path "C:\Uteis\pre_sysprep.lnk" -PassThru -Destination "C:\Users\procuradoria\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\pre_sysprep.lnk") -ne $null){
+    #             Write-Host "Atalho copiado."
+    #             Write-Host -BackgroundColor Red "Reiniciando... O script irá iniciar automaticamente após o login."
+    #             Start-Anim -num 5
+    #             Shutdown /r /f /t 3
+    #         } else {
+    #             "Erro ao copiar o atalho!"
+    #         }
+    #     } else {
+    #         "Atalho de autostart já existe."
+    #     }
+    # }
+
+    # Write-Host "Apagando arquivos desnecessários..."
+    # Get-ChildItem -Path 'C:\Uteis' -Exclude 'Layout' | Remove-Item -Recurse -Force
+    # Remove-Item 'C:\Uteis\Layout\applyLayout.ps1' -Force -ErrorAction SilentlyContinue | Out-Null
+    # Remove-Item -Path "C:\Users\procuradoria\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\pre_sysprep.lnk" -Force -ErrorAction SilentlyContinue | Out-Null
+    # Remove-Item -Path "C:\isFreshImage" -Force -ErrorAction SilentlyContinue | Out-Null
 
 }
 
-$softwares = @(
-    "\Softwares\Instaladores\7z1900-x64.msi",
-    "\Softwares\Instaladores\AcroRdrDC1900820071_pt_BR.exe",
-    "\Softwares\Instaladores\AssinadorARISP.exe",
-    "\Softwares\Instaladores\BRyExtensionModule.msi",
-    "\Softwares\Instaladores\bry_signer_setup_3.1.9.0.exe",
-    "\Softwares\Instaladores\ChromeStandaloneSetup64.exe",
-    "\Softwares\Instaladores\Firefox Setup 78.10.1esr.msi",
-    "\Softwares\Instaladores\GDsetupStarsignCUTx64.exe",
-    "\Softwares\Instaladores\gemccid_en-us_64.msi",
-    "\Softwares\Instaladores\InstaladorCadeias_1.0.2.0.exe",
-    "\Softwares\Instaladores\jre-8u301-windows-i586.exe",
-    "\Softwares\Instaladores\jre-8u301-windows-x64.exe",
-    "\Softwares\Instaladores\LibreOffice_7.1.5_Win_x64.msi",
-    "\Softwares\Instaladores\navegadorpje.exe",
-    "\Softwares\Instaladores\OtimizadorPDFv64r97.exe",
-    "\Softwares\Instaladores\pdf24-creator-9.0.1.msi",
-    "\Softwares\Instaladores\pdf24-creator-9.2.0.msi",
-    "\Softwares\Instaladores\pdfsam-4.0.5.msi",
-    "\Softwares\Instaladores\PJeOffice.exe",
-    "\Softwares\Instaladores\QWS3270plus_371.exe",
-    "\Softwares\Instaladores\SafeSignIC30124-x64-win-tu-admin.exe",
-    "\Softwares\Instaladores\vlc-3.0.8-win64.exe",
-    "\Softwares\Instaladores\winff-x86-x64.exe"
-)
+#$softwares = @(
+#    "\Softwares\Instaladores\7z1900-x64.msi",
+#    "\Softwares\Instaladores\AcroRdrDC1900820071_pt_BR.exe",
+#    "\Softwares\Instaladores\AssinadorARISP.exe",
+#    "\Softwares\Instaladores\BRyExtensionModule.msi",
+#    "\Softwares\Instaladores\bry_signer_setup_3.1.9.0.exe",
+#    "\Softwares\Instaladores\ChromeStandaloneSetup64.exe",
+#    "\Softwares\Instaladores\Firefox Setup 78.10.1esr.msi",
+#    "\Softwares\Instaladores\GDsetupStarsignCUTx64.exe",
+#    "\Softwares\Instaladores\gemccid_en-us_64.msi",
+#    "\Softwares\Instaladores\InstaladorCadeias_1.0.2.0.exe",
+#    "\Softwares\Instaladores\jre-8u301-windows-i586.exe",
+#    "\Softwares\Instaladores\jre-8u301-windows-x64.exe",
+#    "\Softwares\Instaladores\LibreOffice_7.1.5_Win_x64.msi",
+#    "\Softwares\Instaladores\navegadorpje.exe",
+#    "\Softwares\Instaladores\OtimizadorPDFv64r97.exe",
+#    "\Softwares\Instaladores\pdf24-creator-9.0.1.msi",
+#    "\Softwares\Instaladores\pdf24-creator-9.2.0.msi",
+#    "\Softwares\Instaladores\pdfsam-4.0.5.msi",
+#    "\Softwares\Instaladores\PJeOffice.exe",
+#    "\Softwares\Instaladores\QWS3270plus_371.exe",
+#    "\Softwares\Instaladores\SafeSignIC30124-x64-win-tu-admin.exe",
+#    "\Softwares\Instaladores\vlc-3.0.8-win64.exe",
+#    "\Softwares\Instaladores\winff-x86-x64.exe"
+#)
 
 $arquivos = @(
     "\Ajustes",
@@ -545,6 +567,10 @@ $arquivos = @(
     "\Sysprep",
     "\pre_sysprep.ps1",
     "\pre_sysprep.lnk",
+    "\enableFOG.bat",
+    "\pos_sysprep.bat",
+    "\task_pos_sysprep.xml",
+    "\task_pos_sysprep.bat",
     "\Ajustes\ajusta-ntp.bat",
     "\Ajustes\ajusta-tzdata.bat",
     "\Ajustes\ativaAdminShare.bat",
@@ -554,91 +580,12 @@ $arquivos = @(
     "\Layout\StartMenu\desktopLayout.xml",
     "\Layout\Wallpaper",
     "\Layout\Wallpaper\wallpaper.jpg",
-    "\Navegadores\bookmarks.html",
-    "\Navegadores\bookmarksff.json",
-    "\Navegadores\install.ps1",
-    "\Navegadores\chrome",
-    "\Navegadores\chrome\master_preferences",
-    "\Navegadores\firefox",
-    "\Navegadores\firefox\autoconfig.js",
-    "\Navegadores\firefox\local-settings.js",
-    "\Navegadores\firefox\mozilla.cfg",
     "\Samba\Windows10_Gerenciamento_Credenciais.reg",
     "\Samba\Windows10_Netlogon.reg",
     "\Samba\Windows10_SambaDomain.reg",
     "\Samba\Windows10_SMB.ps1",
     "\Softwares\removeApps.ps1",
     "\Softwares\setFileAssoc.ps1",
-    "\Softwares\CCleanerPortable",
-    "\Softwares\CCleanerPortable\lang",
-    "\Softwares\CCleanerPortable\lang\lang-1025.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1026.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1027.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1028.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1029.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1030.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1031.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1032.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1033.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1034.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1035.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1036.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1037.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1038.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1040.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1041.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1042.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1043.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1044.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1045.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1046.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1048.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1049.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1050.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1051.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1052.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1053.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1054.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1055.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1056.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1057.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1058.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1059.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1060.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1061.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1062.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1063.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1065.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1066.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1067.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1068.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1071.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1079.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1081.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1086.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1087.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1090.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1092.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1093.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1102.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1104.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1109.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1110.dll",
-    "\Softwares\CCleanerPortable\lang\lang-1155.dll",
-    "\Softwares\CCleanerPortable\lang\lang-2052.dll",
-    "\Softwares\CCleanerPortable\lang\lang-2070.dll",
-    "\Softwares\CCleanerPortable\lang\lang-2074.dll",
-    "\Softwares\CCleanerPortable\lang\lang-3098.dll",
-    "\Softwares\CCleanerPortable\lang\lang-5146.dll",
-    "\Softwares\CCleanerPortable\lang\lang-9999.dll",
-    "\Softwares\CCleanerPortable\x64",
-    "\Softwares\CCleanerPortable\x64\CCleanerDU.dll",
-    "\Softwares\CCleanerPortable\x86",
-    "\Softwares\CCleanerPortable\x86\CCleanerDU.dll",
-    "\Softwares\CCleanerPortable\CCleaner.exe",
-    "\Softwares\CCleanerPortable\CCleaner64.exe",
-    "\Softwares\CCleanerPortable\License.txt",
-    "\Softwares\CCleanerPortable\portable.dat",
     "\Softwares\WSUS",
     "\Softwares\WSUS\limpaWSUS.bat",
     "\Softwares\WSUS\wsus.bat",
@@ -650,6 +597,7 @@ $arquivos = @(
     "\Softwares\VNC\vnc.bat",
     "\Softwares\KSP",
     "\Softwares\KSP\Agente12.exe",
+    "\Softwares\KSP\Kesb11_6_Win10.exe",
     "\Softwares\KSP\ksp.bat",
     "\Softwares\OCS",
     "\Softwares\OCS\ocs.bat",
@@ -696,13 +644,13 @@ if (Test-Path -Path $keyAjustes){
     $isKeyAjustes = $false
 }
 
-$keySwInst = "C:\Uteis\keySwInst"
-$isKeySwInst = $false
-if (Test-Path -Path $keySwInst){
-    $isKeySwInst = $true
-} else {
-    $isKeySwInst = $false
-}
+#$keySwInst = "C:\Uteis\keySwInst"
+#$isKeySwInst = $false
+#if (Test-Path -Path $keySwInst){
+#    $isKeySwInst = $true
+#} else {
+#    $isKeySwInst = $false
+#}
 
 # Clear-Host
 # Show-Banner
