@@ -1,4 +1,4 @@
-﻿if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
 $OutputEncoding = [System.Console]::OutputEncoding = [System.Console]::InputEncoding = [System.Text.Encoding]::UTF8
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 function Start-Anim {
@@ -297,8 +297,8 @@ function Start-Sysprep {
             Write-Host "Removendo histórico de comandos do Powershell ..."
             Remove-Item -Confirm:$false $env:APPDATA"\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -ErrorAction SilentlyContinue | Out-Null
             
-            #Write-Host "Iniciando CCleaner ..."
-            #Start-Process -Wait $localExecPath"\Softwares\CCleanerPortable\CCleaner64.exe"
+            Write-Host "Iniciando CCleaner ..."
+            Start-Process -Wait $localExecPath"\Softwares\CCleanerPortable\runCCleaner.bat"
             
             Write-Host "Iniciando limpeza de discos..."
             Start-Process -Wait powershell -ArgumentList 'C:\Windows\System32\cleanmgr.exe /sagerun:0'
@@ -487,10 +487,12 @@ function Start-PostDeploy {
         }
         
         # # ZBX
-        # Write-Host "Instalando e configurando Zabbix Agent ..."
-        # If ( -Not (Test-Path -Path "C:\Zabbix")){ 
-        #     Start-Process -Wait powershell -ArgumentList ''
-        # }
+        Write-Host "Instalando e configurando Zabbix Agent ..."
+        If ( -Not (Test-Path -Path "C:\ZabbixAgent\bin\zabbix_agentd.exe")){ 
+            Start-Process -Wait powershell -ArgumentList ''
+        } else {
+            Write-Host "Zabbix Inventory já está instalado."
+        }
         
         # OCS
         If ( -Not (Test-Path -Path "C:\Program Files (x86)\OCS Inventory Agent\OCSInventory.exe")){
@@ -586,6 +588,9 @@ $arquivos = @(
     "\Samba\Windows10_SMB.ps1",
     "\Softwares\removeApps.ps1",
     "\Softwares\setFileAssoc.ps1",
+    "\Softwares\CCleanerPortable",
+    "\Softwares\CCleanerPortable\runCCleaner.bat",
+    "\Softwares\CCleanerPortable\CCleanerPortable.zip",
     "\Softwares\WSUS",
     "\Softwares\WSUS\limpaWSUS.bat",
     "\Softwares\WSUS\wsus.bat",
@@ -602,6 +607,34 @@ $arquivos = @(
     "\Softwares\OCS",
     "\Softwares\OCS\ocs.bat",
     "\Softwares\OCS\win7_8_10_ocspackage.exe",
+    "\Softwares\ZBX",
+    "\Softwares\ZBX\ZabbixAgentDeployV2.bat",
+    "\Softwares\ZBX\ZabbixAgent",
+    "\Softwares\ZBX\ZabbixAgent\bin",
+    "\Softwares\ZBX\ZabbixAgent\bin\",
+    "\Softwares\ZBX\ZabbixAgent\bin\zabbix_agentd.exe",
+    "\Softwares\ZBX\ZabbixAgent\bin\zabbix_get.exe",
+    "\Softwares\ZBX\ZabbixAgent\bin\zabbix_sender.exe",
+    "\Softwares\ZBX\ZabbixAgent\bin\dev",
+    "\Softwares\ZBX\ZabbixAgent\bin\dev\zabbix_sender.dll",
+    "\Softwares\ZBX\ZabbixAgent\conf\",
+    "\Softwares\ZBX\ZabbixAgent\conf\zabbix_agentd.conf",
+    "\Softwares\ZBX\ZabbixAgent\conf\zabbix_agentd.userparams.conf",
+    "\Softwares\ZBX\ZabbixAgent\conf\zabbix_agentd.conf.d",
+    "\Softwares\ZBX\ZabbixAgent\log\",
+    "\Softwares\ZBX\ZabbixAgent\temp\",
+    "\Softwares\ZBX\ZabbixAgent\utils\",
+    "\Softwares\ZBX\ZabbixAgent\utils\adminEnabled.ps1",
+    "\Softwares\ZBX\ZabbixAgent\utils\getDisk.ps1",
+    "\Softwares\ZBX\ZabbixAgent\utils\getDomain.ps1",
+    "\Softwares\ZBX\ZabbixAgent\utils\getIP.ps1",
+    "\Softwares\ZBX\ZabbixAgent\utils\getMacAddress.ps1",
+    "\Softwares\ZBX\ZabbixAgent\utils\getOCSver.bat",
+    "\Softwares\ZBX\ZabbixAgent\utils\getUsers.bat",
+    "\Softwares\ZBX\ZabbixAgent\utils\getUsers.ps1",
+    "\Softwares\ZBX\ZabbixAgent\utils\getWSUSconf.bat",
+    "\Softwares\ZBX\ZabbixAgent\utils\wsus.ps1",
+    "\Softwares\ZBX\ZabbixAgent\utils\zbxSync.ps1",
     "\Sysprep\copy.xml",
     "\Sysprep\sysprep.ps1",
     "\Sysprep\sysprep.lnk"
